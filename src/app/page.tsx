@@ -10,7 +10,7 @@ export default function Home() {
     <>
       {/* LEFT SIDE  */}
       <FramerWrapper
-        className=" h-full w-auto flex flex-col justify-start gap-4"
+        className=" h-full w-auto block flex-col justify-start gap-4"
         y={0}
         x={100}
       >
@@ -21,7 +21,7 @@ export default function Home() {
       <FramerWrapper
         className="h-full w-[47%] relative block   max-lg:hidden"
         y={0}
-        x={100}
+        x={-100}
       >
         {/* IMAGE  */}
         <HeroImage />
