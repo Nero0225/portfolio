@@ -1,13 +1,9 @@
+import heroImg from '../../public/static/img/hero-img.webp';
+import Image from 'next/image';
+
 const HeroImage = ()  => {
     return(
-        <div>
-          <img
-            src="static/img/hero-img.webp"
-            alt="logo"
-            height={500}
-            width={500}
-          />
-        </div>
+      <Image src={heroImg} alt="logo" height={500} width={500} />
     )
 }
 export default HeroImage

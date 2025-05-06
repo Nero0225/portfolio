@@ -26,43 +26,38 @@ const Navbar = () => {
   const data = [
     {
       title: 'Home',
-      icon: (
-        <HomeIcon className='h-full w-full ' />
-      ),
+      icon: <HomeIcon className='h-full w-full ' />,
       href: '/',
+      id: "home"
     },
     {
       title: 'About',
-      icon: (
-        <User className='h-full w-full ' />
-      ),
+      icon: <User className='h-full w-full ' />,
       href: '/about',
+      id: "about"
     },
     {
       title: 'Skills',
-      icon: (
-        <LightbulbIcon className='h-full w-full ' />
-      ),
+      icon: <LightbulbIcon className='h-full w-full ' />,
       href: '/skills',
+      id: "skills"
     },
     {
       title: 'Education',
-      icon: (
-        <GraduationCap className='h-full w-full ' />
-      ),
+      icon: <GraduationCap className='h-full w-full ' />,
       href: '/education',
+      id: "education"
     },
     {
       title: 'Projects',
-      icon: (
-        <FolderGit2 className='h-full w-full ' />
-      ),
+      icon: <FolderGit2 className='h-full w-full ' />,
       href: '/projects',
+      id: "projects"
     },
   ];
   const [scrolling, setScrolling] = useState(false);
   const pathname = usePathname()
-  
+
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 0) {
