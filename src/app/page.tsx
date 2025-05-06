@@ -12,7 +12,7 @@ export default function Home() {
       <FramerWrapper
         className=" h-full w-auto flex flex-col justify-start gap-4"
         y={0}
-        x={-100}
+        x={100}
       >
         <HeroTexts />
         <DownLoadResumeBtn />
