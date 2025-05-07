@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 
 import {
   Briefcase,
+  Contact,
   FolderGit2,
   GraduationCap,
   HomeIcon,
@@ -53,6 +54,12 @@ const Navbar = () => {
       icon: <FolderGit2 className='h-full w-full ' />,
       href: '/projects',
       id: "projects"
+    },
+    {
+      title: 'Contact',
+      icon: <Contact className='h-full w-full ' />,
+      href: '/contact',
+      id: "contact"
     },
   ];
   const [scrolling, setScrolling] = useState(false);
