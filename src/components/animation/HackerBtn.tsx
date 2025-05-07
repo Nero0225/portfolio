@@ -33,16 +33,10 @@ const HackerBtn = ({ label }: { label: string }) => {
   }, [label]);
 
   return (
-    <a
-      className='btn text-base px-5 py-6'
-      href="static/resume/resume.pdf"
-      target="_blank"
-    >
-      <Button size={'lg'} className='text-base px-5 py-6' onMouseEnter={startScrambling}>
-          <View className="mx-1" />
-          {displayText}
-      </Button>
-    </a>
+    <Button size={'lg'} className='text-base px-5 py-6' onMouseEnter={startScrambling}>
+        <View className="mx-1" />
+        {displayText}
+    </Button>
   );
 };
 
