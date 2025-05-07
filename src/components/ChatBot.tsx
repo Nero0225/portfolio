@@ -13,7 +13,7 @@ interface Message {
 
 export default function ChatBot() {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>([{ role: 'assistant', content: "How can I help you?", id: (Date.now() + 1).toString() }]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
@@ -34,44 +34,6 @@ export default function ChatBot() {
       inputRef.current?.focus();
     }
   }, [isOpen]);
-
-  const handleCopy = async (content: string, messageId: string) => {
-    try {
-      await navigator.clipboard.writeText(content);
-      setCopiedMessageId(messageId);
-      console.log(messageId)
-    } catch (err) {
-      console.error('Failed to copy text: ', err);
-    }
-  };
-
-  const handleRegenerate = async (messageId: string) => {
-    const messageIndex = messages.findIndex(m => m.id === messageId);
-    if (messageIndex === -1) return;
-
-    const userMessage = messages[messageIndex - 1];
-    if (!userMessage || userMessage.role !== 'user') return;
-
-    setIsLoading(true);
-    try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ message: userMessage.content }),
-      });
-
-      const data = await response.json();
-      const newMessages = [...messages];
-      newMessages[messageIndex] = { ...newMessages[messageIndex], content: data.message };
-      setMessages(newMessages);
-    } catch (error) {
-      console.error('Error:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
