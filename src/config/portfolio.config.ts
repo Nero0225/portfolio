@@ -250,14 +250,14 @@ This prompt sets a clear, friendly tone, provides organized information, and enc
       github_url: "",
       demo_url: "https://renr-bcit.web.app/",
     },
-    {
-      img: "static/img/tmc_motors.png",
-      title: "Motor Company Website",
-      description: "This is a company website that sells transportation gear, including automobiles, and it also has a chatbot.",
-      tech_stack: ["NextJs", "RAG"],
-      github_url: "",
-      demo_url: "https://www.tmcmotors.co.uk/"
-    },
+    // {
+    //   img: "static/img/tmc_motors.png",
+    //   title: "Motor Company Website",
+    //   description: "This is a company website that sells transportation gear, including automobiles, and it also has a chatbot.",
+    //   tech_stack: ["NextJs", "RAG"],
+    //   github_url: "",
+    //   demo_url: "https://www.tmcmotors.co.uk/"
+    // },
     {
       img: "static/img/pokedex-responsive.png",
       title: "Pokedex",
