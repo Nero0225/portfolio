@@ -9,6 +9,7 @@ const openai = new OpenAI({
 export async function POST(req: Request) {
   try {
     const { message } = await req.json();
+    console.log(message)
 
     // Create chat completion
     const completion = await openai.chat.completions.create({
@@ -22,7 +23,7 @@ export async function POST(req: Request) {
           content: message
         }
       ],
-      model: "gpt-3.5-turbo",
+      model: "gpt-4o-mini",
     });
 
     return NextResponse.json({

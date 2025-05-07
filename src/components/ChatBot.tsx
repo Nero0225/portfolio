@@ -1,11 +1,15 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { MessageSquare, X } from 'lucide-react';
+import { SendHorizonal } from "lucide-react";
+import { MessageSquare, X, Copy, RefreshCw } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import * as Tooltip from '@radix-ui/react-tooltip';
 
 interface Message {
   role: 'user' | 'assistant';
   content: string;
+  id?: string;
 }
 
 export default function ChatBot() {
@@ -13,6 +17,7 @@ export default function ChatBot() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -31,11 +36,49 @@ export default function ChatBot() {
     }
   }, [isOpen]);
 
+  const handleCopy = async (content: string, messageId: string) => {
+    try {
+      await navigator.clipboard.writeText(content);
+      setCopiedMessageId(messageId);
+      setTimeout(() => setCopiedMessageId(null), 2000);
+    } catch (err) {
+      console.error('Failed to copy text: ', err);
+    }
+  };
+
+  const handleRegenerate = async (messageId: string) => {
+    const messageIndex = messages.findIndex(m => m.id === messageId);
+    if (messageIndex === -1) return;
+
+    const userMessage = messages[messageIndex - 1];
+    if (!userMessage || userMessage.role !== 'user') return;
+
+    setIsLoading(true);
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message: userMessage.content }),
+      });
+
+      const data = await response.json();
+      const newMessages = [...messages];
+      newMessages[messageIndex] = { ...newMessages[messageIndex], content: data.message };
+      setMessages(newMessages);
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
 
-    const userMessage: Message = { role: 'user', content: input };
+    const userMessage: Message = { role: 'user', content: input, id: Date.now().toString() };
     setMessages(prev => [...prev, userMessage]);
     setInput('');
     setIsLoading(true);
@@ -50,7 +93,7 @@ export default function ChatBot() {
       });
 
       const data = await response.json();
-      setMessages(prev => [...prev, { role: 'assistant', content: data.message }]);
+      setMessages(prev => [...prev, { role: 'assistant', content: data.message, id: (Date.now() + 1).toString() }]);
     } catch (error) {
       console.error('Error:', error);
     } finally {
@@ -63,14 +106,15 @@ export default function ChatBot() {
       {/* Chat Icon Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 p-3 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition-colors z-50"
+        // className='animate-pulse absolute left-0 bottom-16 sm:bottom-5 flex rounded-r-full justify-center items-center gap-2 z-50 w-fit h-fit p-2 shadow-md  border-y border-r  border-black hover:bg-primary hover:text-black hover:animate-none'
+        className="animate-pulse fixed bottom-6 right-6 p-3 text-white rounded-full shadow-md hover:bg-primary border-white border hover:text-black hover:animate-none transition-colors z-50"
       >
         {isOpen ? <X size={24} /> : <MessageSquare size={24} />}
       </button>
 
       {/* Chat Interface */}
       {isOpen && (
-        <div className="fixed bottom-24 right-6 w-96 h-[500px] bg-white rounded-lg shadow-xl flex flex-col z-50">
+        <div className="fixed bottom-24 right-6 w-96 h-[500px] bg-white text-black rounded-lg shadow-xl flex flex-col z-50">
           <div className="p-4 border-b">
             <h3 className="font-semibold">Chat with AI</h3>
           </div>
@@ -86,11 +130,64 @@ export default function ChatBot() {
                 <div
                   className={`max-w-[80%] rounded-lg p-3 ${
                     message.role === 'user'
-                      ? 'bg-blue-600 text-black'
-                      : 'bg-gray-700'
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-gray-600 text-white'
                   }`}
                 >
-                  {message.content}
+                  {message.role === 'assistant' ? (
+                    <>
+                      <div className="prose prose-invert max-w-none">
+                        <ReactMarkdown>
+                          {message.content}
+                        </ReactMarkdown>
+                      </div>
+                      <div className="flex justify-end gap-2 mt-2 pt-2 border-t border-gray-500">
+                        <Tooltip.Provider>
+                          <Tooltip.Root>
+                            <Tooltip.Trigger asChild>
+                              <button
+                                onClick={() => handleCopy(message.content, message.id!)}
+                                className="p-1 hover:bg-gray-500 rounded transition-colors"
+                              >
+                                <Copy size={16} />
+                              </button>
+                            </Tooltip.Trigger>
+                            <Tooltip.Portal>
+                              <Tooltip.Content
+                                className="bg-gray-800 text-white px-2 py-1 rounded text-sm"
+                                sideOffset={5}
+                              >
+                                {copiedMessageId === message.id ? 'Copied!' : 'Copy message'}
+                                <Tooltip.Arrow className="fill-gray-800" />
+                              </Tooltip.Content>
+                            </Tooltip.Portal>
+                          </Tooltip.Root>
+
+                          <Tooltip.Root>
+                            <Tooltip.Trigger asChild>
+                              <button
+                                onClick={() => handleRegenerate(message.id!)}
+                                className="p-1 hover:bg-gray-500 rounded transition-colors"
+                              >
+                                <RefreshCw size={16} />
+                              </button>
+                            </Tooltip.Trigger>
+                            <Tooltip.Portal>
+                              <Tooltip.Content
+                                className="bg-gray-800 text-white px-2 py-1 rounded text-sm"
+                                sideOffset={5}
+                              >
+                                Regenerate response
+                                <Tooltip.Arrow className="fill-gray-800" />
+                              </Tooltip.Content>
+                            </Tooltip.Portal>
+                          </Tooltip.Root>
+                        </Tooltip.Provider>
+                      </div>
+                    </>
+                  ) : (
+                    message.content
+                  )}
                 </div>
               </div>
             ))}
@@ -119,7 +216,7 @@ export default function ChatBot() {
                 disabled={isLoading}
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
               >
-                Send
+                <SendHorizonal />
               </button>
             </div>
           </form>
