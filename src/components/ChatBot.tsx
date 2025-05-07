@@ -2,9 +2,8 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { SendHorizonal } from "lucide-react";
-import { MessageSquare, X, Copy, RefreshCw } from 'lucide-react';
+import { MessageSquare, X } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
-import * as Tooltip from '@radix-ui/react-tooltip';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -40,7 +39,7 @@ export default function ChatBot() {
     try {
       await navigator.clipboard.writeText(content);
       setCopiedMessageId(messageId);
-      setTimeout(() => setCopiedMessageId(null), 2000);
+      console.log(messageId)
     } catch (err) {
       console.error('Failed to copy text: ', err);
     }
@@ -140,49 +139,6 @@ export default function ChatBot() {
                         <ReactMarkdown>
                           {message.content}
                         </ReactMarkdown>
-                      </div>
-                      <div className="flex justify-end gap-2 mt-2 pt-2 border-t border-gray-500">
-                        <Tooltip.Provider>
-                          <Tooltip.Root>
-                            <Tooltip.Trigger asChild>
-                              <button
-                                onClick={() => handleCopy(message.content, message.id!)}
-                                className="p-1 hover:bg-gray-500 rounded transition-colors"
-                              >
-                                <Copy size={16} />
-                              </button>
-                            </Tooltip.Trigger>
-                            <Tooltip.Portal>
-                              <Tooltip.Content
-                                className="bg-gray-800 text-white px-2 py-1 rounded text-sm"
-                                sideOffset={5}
-                              >
-                                {copiedMessageId === message.id ? 'Copied!' : 'Copy message'}
-                                <Tooltip.Arrow className="fill-gray-800" />
-                              </Tooltip.Content>
-                            </Tooltip.Portal>
-                          </Tooltip.Root>
-
-                          <Tooltip.Root>
-                            <Tooltip.Trigger asChild>
-                              <button
-                                onClick={() => handleRegenerate(message.id!)}
-                                className="p-1 hover:bg-gray-500 rounded transition-colors"
-                              >
-                                <RefreshCw size={16} />
-                              </button>
-                            </Tooltip.Trigger>
-                            <Tooltip.Portal>
-                              <Tooltip.Content
-                                className="bg-gray-800 text-white px-2 py-1 rounded text-sm"
-                                sideOffset={5}
-                              >
-                                Regenerate response
-                                <Tooltip.Arrow className="fill-gray-800" />
-                              </Tooltip.Content>
-                            </Tooltip.Portal>
-                          </Tooltip.Root>
-                        </Tooltip.Provider>
                       </div>
                     </>
                   ) : (
