@@ -20,7 +20,7 @@ interface ProjectCardProps {
 const ProjectCard: React.FC<ProjectCardProps> = ({ list, index }) => {
   return (
     <FramerWrapper 
-      className="max-w-[70%] max-lg:max-w-full m-auto" 
+      className="max-w-[70%] max-lg:max-w-full" 
       y={0} 
       scale={0.8} 
       delay={index/4} 

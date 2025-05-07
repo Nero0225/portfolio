@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import Navbar from "@/components/Navbar";
 import { portfolioConfig } from "@/config/portfolio.config";
+import ChatBot from "@/components/ChatBot";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -64,6 +65,8 @@ export default function RootLayout({
           {/* NAVBAR ->  */}
           <Navbar />
           {children}
+          {/* ChatBot - Available on all pages */}
+          <ChatBot />
         </main>
       </body>
     </html>
